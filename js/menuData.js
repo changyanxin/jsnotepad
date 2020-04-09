@@ -1,5 +1,4 @@
-/* global dlgFont, $notepad: true */
-/* eslint no-console: ["error", { allow: ["log"]  }] */
+
 var menuData = [
   {
     title: '文件(F)',

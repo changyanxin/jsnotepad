@@ -1,169 +1,67 @@
-/* exported $menubar*/
-var $menubar = (function() {
-  var $bar = $('<div class="notepad-menubar"></div>');
+function Menubar() {
+  // 元素
+  this.$menubar = null;
+  this.$menus = [];
 
-  var menuData,           // 所有菜单数据
-      menus = [];         // 存放五个下拉菜单的 DOM 对象
+  // 菜单显示状态
+  this.openMenu = -1;
 
-  /* 下拉菜单是否展开，没有展开为：-1
-   * 展开为：n，n 代表展开的是第几个菜单
-   * 0 是文件菜单，1 是编辑菜单，2 是格式菜单
-   * 3 是查看菜单，4 是帮助菜单 */
-  var active = -1;
-
-  function createMenuTitle() {
-    var $titles = $('<ul class="menu-title"></ul>');
-
-    for(var i=0; i<menuData.length; i++) {
-      var $title = $('<li class="title"></li>');
-
-      $title.html(menuData[i].title);
-      $title.attr('data-id', i);
-      $titles.append($title);
-
-      $title.click(function(e) {
-        var i = Number(this.dataset.id);
-
-        if(active === -1) {
-          menus[i].css({ display: 'inline-block' });
-          active = i;
-        } else if(active !== i) {
-          menus[active].css({ display: 'none' });
-          menus[i].css({ display: 'inline-block' });
-          active = i;
+  // 初始化
+  this.init = function (menuData) {
+    // 添加元素
+    var $menubar = $('<div class="menubar"></div>');
+    // 添加 menu-title
+    var $menu_title = $('<ul class="menu_title">');
+    for (var i = 0; i < menuData.length; i++) {
+      var $li = $(`<li>${menuData[i].title}</li>`);
+      // 绑定点击事件和滑动事件
+      $li.click(this.showMenu.bind(this, i));
+      $li.mouseover(this.showMenu.bind(this, i));
+      $menu_title.append($li);
+    }
+    $menubar.append($menu_title);
+    // 添加menus
+    for (var i = 0; i < menuData.length; i++) {
+      var $menu = $('<ul class="menu"></ul>');
+      for (var j = 0; j < menuData[i].menuItems.length; j++) {
+        if (menuData[i].menuItems[j].title == 'hr') {
+          var $menu_item = $('<li class="menu_hr"></li>');
         } else {
-          menus[active].css({ display: 'none' });
-          active = -1;
+          var $menu_item = $(`<li class="menu_item">${menuData[i].menuItems[j].title}<span class="shortcut">${menuData[i].menuItems[j].shortcut}</span></li>`);
+          // 绑定点击事件
+          $menu_item.click(menuData[i].menuItems[j].handler);
         }
-
-        e.stopPropagation();
-      });
-
-      $title.hover(function() {
-        if(active !== -1) {
-          var i = Number(this.dataset.id);
-
-          menus[active].css({ display: 'none' });
-          menus[i].css({ display: 'inline-block' });
-          active = i;
-        }
-      });
-    }
-
-    $bar.append($titles);
-  }
-
-  function createMenus() {
-    for(var i=0; i<menuData.length; i++) {
-      var $menus = $('<ul class="menus"></ul>'),
-          items = menuData[i].menuItems;
-
-      for(var j=0; j<items.length; j++) {
-        if(items[j].title === 'hr') {
-          var $hr = $('<li class="menu-hr"></li>');
-          $menus.append($hr);
-          continue;
-        }
-
-        var $menu = $('<li class="menu-item"></li>');
-
-        $menu.html(items[j].title);
-        $menu.attr('data-x', i);
-        $menu.attr('data-y', j);
-
-        if(items[j].shortcut !== '') {
-          var $shorcut = $('<span class="shortcut"></span>');
-
-          $shorcut.html(items[j].shortcut);
-          $menu.append($shorcut);
-        }
-
-        if(!items[j].enabled) $menu.addClass('disabled');
-
-        $menus.append($menu);
-
-        $menu.click(function(e) {
-          e.stopPropagation();
-
-          if($(this).hasClass('disabled')) return;
-
-          var i = this.dataset.x, j = this.dataset.y;
-
-          menus[i].css({display: 'none'});
-          active = -1;
-
-          menuData[i].menuItems[j].handler();
-        });
+        $menu.append($menu_item);
       }
-
-      $menus.css({
-        width: menuData[i].width,
-        left: menuData[i].left,
-        display: 'none'
-      });
-
-      $bar.append($menus);
-      menus.push($menus);
+      $menu.css('width', menuData[i].width);
+      $menu.css('left', 62 * i);
+      $menubar.append($menu);
+      this.$menus.push($menu);
     }
-  }
-
-  /**
-   * 设置菜单项是否为勾选状态
-   *
-   * @param row [0-4] 代表文件、编辑、格式、查看、帮助五个菜单栏
-   * @param col 代表第几个下拉菜单项
-   * @param isEnabled true 为勾选，false 为取消勾选
-   */
-  function checked(row, col, isChecked) {
-    var menuItem = menus[row].find('.menu-item')[col];
-
-    if(isChecked) {
-      $(menuItem).prepend($('<span class="checked">✓</span>')[0]);
-    } else {
-      $(menuItem).find('.checked').remove();
-    }
-  }
-
-  /**
-   * 设置菜单项为启用或禁用状态
-   *
-   * @param row [0-4] 代表文件、编辑、格式、查看、帮助五个菜单栏
-   * @param col 代表第几个下拉菜单项
-   * @param isEnabled true 为启用，false 为禁用
-   */
-  function enabled(row, col, isEnabled) {
-    var menuItem = menus[row].find('.menu-item')[col];
-
-    if(isEnabled) {
-      $(menuItem).removeClass('disabled');
-    } else {
-      $(menuItem).addClass('disabled');
-    }
-  }
-
-  function hideMenu() {
-    if(active === -1) return;
-
-    menus[active].css({display: 'none'});
-    active = -1;
-  }
-
-  function init() {
-    createMenuTitle();
-    createMenus();
-
-    $('body').append($bar);
-  }
-
-  function show(data) {
-    menuData = data;
-    init();
-  }
-
-  return {
-    show: show,
-    checked: checked,
-    enabled: enabled,
-    hideMenu: hideMenu
+    this.$menubar = $menubar;
+    return $menubar;
   };
-}());
+  // 显示第 index 个菜单
+  this.showMenu = function (index, e) {
+    e.stopPropagation();
+    if (e.type == 'click' && this.openMenu > -1) {
+      this.hideMenu();
+    } else if (e.type == 'click' || this.openMenu > -1) {
+      this.openMenu = index;
+      for (var i = 0; i < this.$menus.length; i++) {
+        if (i == index) {
+          this.$menus[i].addClass('active');
+        } else {
+          this.$menus[i].removeClass('active');
+        }
+      }
+    }
+  };
+  // 隐藏菜单
+  this.hideMenu = function () {
+    this.openMenu = -1;
+    for (var i = 0; i < this.$menus.length; i++) {
+      this.$menus[i].removeClass('active');
+    }
+  };
+}
