@@ -1,3 +1,5 @@
+console.log('hhhhhhhhhhh');
+
 
 var $notepad = $('#notepad');
 var menubar = new Menubar();
@@ -8,3 +10,4 @@ var dlgFont = new DlgFont(editor);
 var $dlgFont = dlgFont.init();
 $notepad.after($dlgFont);
 $notepad.click(menubar.hideMenu.bind(menubar));
+
