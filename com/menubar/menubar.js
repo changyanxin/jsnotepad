@@ -1,67 +1,73 @@
-function Menubar() {
-  // 元素
-  this.$menubar = null;
-  this.$menus = [];
+var $menubar = $(function(){
+  var $menus = [];// 存放五个下拉菜单的 DOM 对象
+  var $active = -1;// 下拉菜单是否展开，没有展开为：-1
+  var $bar = $('<div class="notepad-menubar"></div>');
 
-  // 菜单显示状态
-  this.openMenu = -1;
+  function show(menuData){
+    var $titles = $('<ul class="menu-title">');
 
-  // 初始化
-  this.init = function (menuData) {
-    // 添加元素
-    var $menubar = $('<div class="menubar"></div>');
-    // 添加 menu-title
-    var $menu_title = $('<ul class="menu_title">');
-    for (var i = 0; i < menuData.length; i++) {
-      var $li = $(`<li>${menuData[i].title}</li>`);
-      // 绑定点击事件和滑动事件
-      $li.click(this.showMenu.bind(this, i));
-      $li.mouseover(this.showMenu.bind(this, i));
-      $menu_title.append($li);
+    for (var i = 0; i < menuData.length; i ++) {
+      var $title = $("<li class='title'>" + menuData[i].title + "</li>");
+      $title.click(function(){
+        var $this= $(this);
+        pullMenu.bind($this, i);
+      });
+      $title.mouseover(function(){
+          var $this= $(this);
+          pullMenu.bind($this, i);
+      });
+      $titles.append($title);
     }
-    $menubar.append($menu_title);
-    // 添加menus
-    for (var i = 0; i < menuData.length; i++) {
-      var $menu = $('<ul class="menu"></ul>');
-      for (var j = 0; j < menuData[i].menuItems.length; j++) {
-        if (menuData[i].menuItems[j].title == 'hr') {
-          var $menu_item = $('<li class="menu_hr"></li>');
-        } else {
-          var $menu_item = $(`<li class="menu_item">${menuData[i].menuItems[j].title}<span class="shortcut">${menuData[i].menuItems[j].shortcut}</span></li>`);
-          // 绑定点击事件
-          $menu_item.click(menuData[i].menuItems[j].handler);
+    $bar.append($titles);
+
+    for (var i = 0; i < menuData.length; i ++) {
+      var $menus = $('<ul class="menus"></ul>'),
+          items = menuData[i].menuItems;
+          
+      for (var j = 0; j < items.length; j ++) {
+        if (items[j].title == 'hr') {
+          var $hr = $('<li class="menu-hr"></li>');
+          $menus.append($hr);
         }
-        $menu.append($menu_item);
+        else {
+          var $menu = $("<li class='menu-item'>" + menuData[i].menuItems[j].title + "<span class='shortcut'>" + menuData[i].menuItems[j].shortcut + "</span>" + "</li>");
+          $menu.click(items[j].handler);
+        }
+        $menus.append($menu);
       }
-      $menu.css('width', menuData[i].width);
-      $menu.css('left', 62 * i);
-      $menubar.append($menu);
-      this.$menus.push($menu);
+      $menus.css('width', menuData[i].width);
+      $menus.css('left', 57 * i);
+      $bar.append($menus);
+      $menus1.push($menus);
     }
-    this.$menubar = $menubar;
-    return $menubar;
-  };
-  // 显示第 index 个菜单
-  this.showMenu = function (index, e) {
-    e.stopPropagation();
-    if (e.type == 'click' && this.openMenu > -1) {
-      this.hideMenu();
-    } else if (e.type == 'click' || this.openMenu > -1) {
-      this.openMenu = index;
-      for (var i = 0; i < this.$menus.length; i++) {
-        if (i == index) {
-          this.$menus[i].addClass('active');
-        } else {
-          this.$menus[i].removeClass('active');
+  }
+
+  function pullMenu (index, event) {
+    event.stopPropagation();
+    if (event.type == 'click' && $active > -1) {
+      hideMenu();
+    }else if(event.type == 'click' || $active > -1) {
+      $active = index;
+      for(var i = 0; i < $menus1.length; i ++) {
+        if(i == index) {
+          $menus1[i].addClass('active');
+        }else{
+          $menus1[i].removeClass('active');
         }
       }
     }
-  };
-  // 隐藏菜单
-  this.hideMenu = function () {
-    this.openMenu = -1;
-    for (var i = 0; i < this.$menus.length; i++) {
-      this.$menus[i].removeClass('active');
+  }
+
+  function hideMenu() {
+    $active = -1;
+    for (var i = 0; i < $menus1.length; i ++) {
+      $menus1[i].removeClass('active');
     }
   };
-}
+  return {
+    show:show,
+    hideMenu:hideMenu,
+    pullMenu:pullMenu
+  }
+}())
+

@@ -1,37 +1,36 @@
-.dlg_font {
+.notepad-dlg-font {
+  z-index: 10;
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: 10;
   display: none;
 }
-.dlg_font.show {
-  display: block;
-}
-.dlg_font .dlg_font_box {
-  position: relative;
-  /* top: 100px; */
-  height: 498px;
+.dialogbox {
+  height: 520px;
   width: 438px;
+  position: relative;
   margin: 100px auto;
   border: 1px solid #0f7fd6;
   box-shadow: 10px 10px 10px #d6d6d6;
   user-select: none;
   cursor: default;
 }
-.dlg_font .header {
+.notepad-dlg-font.show {
+  display: block;
+}
+.notepad-dlg-titlebar {
   height: 30px;
   background-color: #fff;
   font-size: 13px;
 }
-.dlg_font .header > div:first-child {
+.zititle{
   height: 30px;
   line-height: 30px;
   margin-left: 10px;
 }
-.dlg_font .header > div:last-child {
+.close-btn{
   position: absolute;
   right: 0;
   top: 0;
@@ -43,43 +42,43 @@
   font-size: 14px;
   font-weight: bold;
 }
-.dlg_font .header > div:last-child:hover {
+.close-btn:hover {
   background-color: #f11;
   color: #fff;
 }
-.dlg_font .body {
-  height: 444px;
+.main {
+  height: 466px;
   width: 414px;
   background-color: #f0f0f0;
   padding: 12px;
 }
-.dlg_font .body .select_box {
+.notepad-dlg-select {
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: 176px 132px 64px;
   grid-template-rows: 16px 20px 116px;
   grid-gap: 2px 16px;
 }
-.dlg_font .body .select_box input[type="text"] {
+.zibox {
   height: 20px;
   padding-left: 2px;
   border: 1px solid #0078d7;
 }
-.dlg_font .body .select_box ul {
+.ullist {
   background-color: #fff;
   border: 1px solid #828790;
   overflow-y: scroll;
 }
-.dlg_font .body .select_box ul li {
+.list{
   height: 16px;
   line-height: 16px;
   padding-left: 2px;
 }
-.dlg_font .body .select_box ul li.selected {
+.list.selected {
   background-color: #0078d7;
   color: #fff;
 }
-.dlg_font .body .sample {
+.sample {
   width: 200px;
   height: 90px;
   padding: 5px 10px;
@@ -87,26 +86,26 @@
   margin-top: 28px;
   margin-left: 2px;
 }
-.dlg_font .body .sample legend {
+.sample legend {
   background-color: #f0f0f0;
   padding: 0 4px;
 }
-.dlg_font .body .script {
+.script {
   margin-top: 12px;
 }
-.dlg_font .body .script select{
+.script select{
   height: 22px;
   width: 214px;
 }
-.dlg_font .body input[type="button"] {
+.main input[type="button"] {
   position: absolute;  
   bottom: 12px;
   height: 28px;
   width: 86px;
 }
-.dlg_font .body input[type="button"].btn_ok {
+.btn-ok {
   right: 110px;
 }
-.dlg_font .body input[type="button"].btn_cancel {
+.btn-cancel {
   right: 16px;
 }

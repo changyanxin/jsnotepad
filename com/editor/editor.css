@@ -1,17 +1,17 @@
-.editor {
-  position: absolute;
-  top: 33px;
+.notepad-editor {
   bottom: 0;
   left: 0;
+  position: fixed;
   right: 0;
-  z-index: 1;
+  top: 20px;
 }
-.editor textarea {
-  width: 100%;
+.notepad-editor textarea {
+  border-top: 1px solid #d2d2d2;
+  box-sizing: border-box;
   height: 100%;
-  padding: 0 1px;
-  border: none;
-  outline: 0;
-  resize: none;
+  outline: none;
   overflow: scroll;
+  padding: 0 1px;
+  resize: none;
+  width: 100%;
 }

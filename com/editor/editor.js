@@ -1,12 +1,13 @@
-function Editor () {
-  // 元素
-  this.$editor = $('<div class="editor"></div>');
-  this.$textarea = $('<textarea spellcheck="false" auto-size="none" wrap="off"></textarea>');
 
-  // 初始化
-  this.init = function () {
-    this.$editor.append(this.$textarea);
-    return this.$editor;
-  };
-
-}
+$editor=$(function(){
+  function editor(){
+    var $app = $('#notepad-app');
+    var $editor = $('<div class="notepad-editor"></div>');
+    var $textarea = $('<textarea spellcheck="false" auto-size="none" wrap="off"></textarea>');
+    $editor.append($textarea);
+    $app.append($editor);
+  }
+  return {
+    editor:editor
+  }
+}());
